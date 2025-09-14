@@ -13,21 +13,29 @@ def migrate_add_user_role_and_reset_token():
     with engine.connect() as conn:
         # Add role column
         try:
-            conn.execute(text("""
+            conn.execute(
+                text(
+                    """
                 ALTER TABLE users 
                 ADD COLUMN role VARCHAR(10) DEFAULT 'user'
-            """))
+            """
+                )
+            )
             conn.commit()
             print("Added role column to users table")
         except Exception as e:
             print(f"Role column might already exist: {e}")
-        
+
         # Add reset_token column
         try:
-            conn.execute(text("""
+            conn.execute(
+                text(
+                    """
                 ALTER TABLE users 
                 ADD COLUMN reset_token VARCHAR(255)
-            """))
+            """
+                )
+            )
             conn.commit()
             print("Added reset_token column to users table")
         except Exception as e:

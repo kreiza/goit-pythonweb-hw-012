@@ -10,7 +10,7 @@ import sys
 import os
 
 # Add src to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from contacts_api.database import Base, get_db
 from contacts_api.main import app
@@ -39,6 +39,7 @@ def db_session():
 @pytest.fixture(scope="function")
 def client(db_session):
     """Create test client."""
+
     def override_get_db():
         try:
             yield db_session
@@ -54,11 +55,12 @@ def client(db_session):
 def test_user(db_session):
     """Create test user."""
     from contacts_api.auth import get_password_hash
+
     user = models.User(
         username="testuser",
         email="test@example.com",
         hashed_password=get_password_hash("testpass"),
-        is_verified=True
+        is_verified=True,
     )
     db_session.add(user)
     db_session.commit()
@@ -70,13 +72,14 @@ def test_user(db_session):
 def test_contact(db_session, test_user):
     """Create test contact."""
     from datetime import date
+
     contact = models.Contact(
         first_name="John",
         last_name="Doe",
         email="john@example.com",
         phone="1234567890",
         birthday=date(1990, 1, 1),
-        owner_id=test_user.id
+        owner_id=test_user.id,
     )
     db_session.add(contact)
     db_session.commit()

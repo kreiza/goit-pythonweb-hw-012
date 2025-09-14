@@ -16,14 +16,14 @@ redis_client = redis.Redis(
     host=os.getenv("REDIS_HOST", "localhost"),
     port=int(os.getenv("REDIS_PORT", "6379")),
     db=0,
-    decode_responses=True
+    decode_responses=True,
 )
 
 
 def cache_user(user: User) -> None:
     """
     Cache user data in Redis.
-    
+
     Args:
         user: User object to cache
     """
@@ -33,7 +33,7 @@ def cache_user(user: User) -> None:
         "email": user.email,
         "is_verified": user.is_verified,
         "avatar": user.avatar,
-        "role": user.role.value if user.role else "user"
+        "role": user.role.value if user.role else "user",
     }
     redis_client.setex(f"user:{user.username}", 3600, json.dumps(user_data))
 
@@ -41,10 +41,10 @@ def cache_user(user: User) -> None:
 def get_cached_user(username: str) -> Optional[dict]:
     """
     Get cached user data from Redis.
-    
+
     Args:
         username: Username to lookup
-        
+
     Returns:
         User data dict or None if not found
     """
@@ -57,7 +57,7 @@ def get_cached_user(username: str) -> Optional[dict]:
 def invalidate_user_cache(username: str) -> None:
     """
     Remove user from cache.
-    
+
     Args:
         username: Username to remove from cache
     """

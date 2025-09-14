@@ -21,17 +21,17 @@ conf = ConnectionConfig(
     MAIL_STARTTLS=True,
     MAIL_SSL_TLS=False,
     USE_CREDENTIALS=True,
-    VALIDATE_CERTS=True
+    VALIDATE_CERTS=True,
 )
 
 
 def create_email_token(data: dict) -> str:
     """
     Create JWT token for email verification.
-    
+
     Args:
         data: Data to encode in token
-        
+
     Returns:
         Encoded JWT token
     """
@@ -45,10 +45,10 @@ def create_email_token(data: dict) -> str:
 def verify_email_token(token: str) -> str:
     """
     Verify email token and extract email.
-    
+
     Args:
         token: JWT token to verify
-        
+
     Returns:
         Email address or None if invalid
     """
@@ -63,21 +63,21 @@ def verify_email_token(token: str) -> str:
 async def send_verification_email(email: str, username: str) -> None:
     """
     Send email verification message.
-    
+
     Args:
         email: Recipient email address
         username: Username for personalization
     """
     token = create_email_token({"sub": email})
     verification_url = f"http://localhost:8000/auth/verify-email/{token}"
-    
+
     message = MessageSchema(
         subject="Email Verification",
         recipients=[email],
         body=f"Hello {username}! Please verify your email by clicking: {verification_url}",
-        subtype="html"
+        subtype="html",
     )
-    
+
     fm = FastMail(conf)
     await fm.send_message(message)
 
@@ -85,19 +85,19 @@ async def send_verification_email(email: str, username: str) -> None:
 async def send_password_reset_email(email: str, reset_token: str) -> None:
     """
     Send password reset email.
-    
+
     Args:
         email: Recipient email address
         reset_token: Password reset token
     """
     reset_url = f"http://localhost:8000/auth/password-reset/confirm?token={reset_token}"
-    
+
     message = MessageSchema(
         subject="Password Reset",
         recipients=[email],
         body=f"Click here to reset your password: {reset_url}",
-        subtype="html"
+        subtype="html",
     )
-    
+
     fm = FastMail(conf)
     await fm.send_message(message)
